@@ -1,0 +1,31 @@
+body {
+	margin: 0;
+}
+
+a,
+h1,
+h2,
+p {
+	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+
+.header {
+	display: flex;
+	background-color: brown;
+	align-items: center;
+	justify-content: space-evenly;
+	gap: 24px;
+	padding-right: 24px;
+	padding-left: 24px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.header h1 {
+	margin-right: auto;
+}
+
+.header a {
+	color: white;
+}
