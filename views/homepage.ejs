@@ -4,9 +4,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
-	<link rel="stylesheet" href="styles.css">
-	<script src="script.js" defer></script>
+	<title>Productivity Corner</title>
+	<link rel="stylesheet" href="homepage.css">
+	<script src="homepage.js" defer></script>
 </head>
 
 <body>
@@ -14,7 +14,7 @@
 		<h1>The Corner</h1>
 		<a>Home</a>
 		<a href="tasklist/">TaskList</a>
-		<a href="diary/diary.html">Diary</a>
+		<a href="diary/">Diary</a>
 		<a>Blog</a>
 	</div>
 	<div class="firstbody">
@@ -26,6 +26,18 @@
 		</div>
 		<img alt="bullet journal"
 			src="https://inkarto.com/cdn/shop/articles/1200px-bullet-journal-by-matt-ragland.jpg?v=1715353742">
+	</div>
+	<div class="secondbody">
+		<% if(!user.isAuth){ %>
+			<button id="loginbtn">Log in with Google</button>
+			<script type="text/javascript">
+				document.getElementById("loginbtn").onclick = function () {
+					location.href = "/auth/google";
+				};
+			</script>
+			<% } else {%>
+				<p>Logged in!</p>
+				<% } %>
 	</div>
 
 </body>
