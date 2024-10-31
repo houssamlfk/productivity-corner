@@ -19,6 +19,31 @@
 		<a>TaskList</a>
 		<a>Diary</a>
 		<a>Blog</a>
+		<div id="logincontainer">
+			<% if(!user.isAuth){ %>
+				<button id="loginbtn">Log in with Google</button>
+				<script type="text/javascript">
+					document.getElementById("loginbtn").onclick = function () {
+						location.href = "/auth/google";
+					};
+				</script>
+				<% } else {%>
+					<button id="logoutbtn">Logout</button>
+					<img src=<%=user.image%> id="profilepic">
+					<script>
+						const pic = document.getElementById("profilepic");
+						document.getElementById("logoutbtn").onclick = function () {
+							location.href = "/logout";
+							pic.destroy();
+						};
+
+					</script>
+
+					<% } %>
+
+		</div>
+
+
 	</div>
 	<div id="firstbody">
 		<button id="addbtn">Add</button>

@@ -16,6 +16,30 @@
 		<a href="tasklist/">TaskList</a>
 		<a href="diary/">Diary</a>
 		<a>Blog</a>
+		<div id="logincontainer">
+			<% if(!user.isAuth){ %>
+				<button id="loginbtn">Log in with Google</button>
+				<script type="text/javascript">
+					document.getElementById("loginbtn").onclick = function () {
+						location.href = "/auth/google";
+					};
+				</script>
+				<% } else {%>
+					<button id="logoutbtn">Logout</button>
+					<img src=<%=user.image%> id="profilepic">
+					<script>
+						const pic = document.getElementById("profilepic");
+						document.getElementById("logoutbtn").onclick = function () {
+							location.href = "/logout";
+							pic.destroy();
+						};
+
+					</script>
+
+					<% } %>
+
+		</div>
+
 	</div>
 	<div class="firstbody">
 		<div class="para1">
@@ -28,16 +52,6 @@
 			src="https://inkarto.com/cdn/shop/articles/1200px-bullet-journal-by-matt-ragland.jpg?v=1715353742">
 	</div>
 	<div class="secondbody">
-		<% if(!user.isAuth){ %>
-			<button id="loginbtn">Log in with Google</button>
-			<script type="text/javascript">
-				document.getElementById("loginbtn").onclick = function () {
-					location.href = "/auth/google";
-				};
-			</script>
-			<% } else {%>
-				<p>Logged in!</p>
-				<% } %>
 	</div>
 
 </body>

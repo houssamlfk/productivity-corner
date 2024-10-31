@@ -79,7 +79,8 @@ addbtn.addEventListener("click", () => {
         entry.value = "";
 });
 
-savebtn.addEventListener("click", () => {
+savebtn.addEventListener("click", function () {
+        document.getElementById("logoutbtn").style.visibility = "hidden";
         task_send = new Object();
         Object.keys(task_list).forEach((element) => {
                 task_send[task_list[element][2]] = task_list[element][1].textContent;
@@ -90,6 +91,9 @@ savebtn.addEventListener("click", () => {
                 headers: {
                         "Content-Type": "application/json; charset=UTF-8"
                 }
-        });
+        })
+                .then(function (res) {
+                        document.getElementById("logoutbtn").style.visibility = "visible";
+                });
 });
 

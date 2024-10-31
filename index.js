@@ -16,6 +16,9 @@ app.use(session({ secret: 'mysession', resave: false, saveUninitialized: false }
 app.use(passport.initialize());
 app.use(passport.session());
 
+//global variables
+var picture = "";
+var readytoclose = false;
 passport.use(
         new GoogleStrategy(
                 {
@@ -24,6 +27,7 @@ passport.use(
                         callbackURL: '/auth/google/callback',
                 },
                 function (accessToken, refreshToken, profile, done) {
+                        picture = profile._json.picture;
                         return done(null, profile);
                 }
         )
@@ -37,13 +41,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
+
+app.get('/logout', function (req, res) {
+        req.session.destroy();
+        res.redirect('/');
+});
 app.get('/diary', (req, res) => {
         res.render('diary');
 });
 
 app.get('/', (req, res) => {
         let isauth = req.isAuthenticated();
-        res.render('homepage', { user: { isAuth: isauth } });
+        res.render('homepage', { user: { isAuth: isauth, image: picture } });
 });
 
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -57,12 +66,13 @@ app.post("/tasklist/", (req, res) => {
         let database = new sqlite3.Database("tasks.db", sqlite3.OPEN_READWRITE);
         const task_list = req.body.data;
         console.log(JSON.stringify(task_list));
-        database.run("DELETE FROM tasks WHERE true");
-        Object.keys(task_list).forEach((element) => {
-                database.run("INSERT INTO tasks VALUES (?)", task_list[element]);
+        database.serialize(() => {
+                database.run("DELETE FROM tasks WHERE true");
+                Object.keys(task_list).forEach((element) => {
+                        database.run("INSERT INTO tasks VALUES (?)", task_list[element]);
+                });
+                database.close();
         });
-        database.close();
-        res.redirect("/tasklist");
 });
 
 app.get('/tasklist/', (req, res) => {
@@ -71,18 +81,21 @@ app.get('/tasklist/', (req, res) => {
         } else {
                 let datab = new sqlite3.Database("tasks.db", sqlite3.OPEN_READWRITE);
                 task_list_send = new Object();
-                let sql = "SELECT * FROM tasks WHERE true";
-                datab.all(sql, [], (err, rows) => {
-                        if (err) {
-                                return console.error(err.message);
-                        }
-                        for (let i = 0; i < rows.length; i++) {
-                                task_list_send[i + 1] = rows[i].task;
-                        }
-                        res.render("tasklist", { data: task_list_send });
+                datab.serialize(() => {
+                        readytoclose = false;
+                        let sql = "SELECT * FROM tasks WHERE true";
+                        datab.all(sql, [], (err, rows) => {
+                                if (err) {
+                                        return console.error(err.message);
+                                }
+                                for (let i = 0; i < rows.length; i++) {
+                                        task_list_send[i + 1] = rows[i].task;
+                                }
+                                res.render("tasklist", { data: task_list_send, user: { isAuth: req.isAuthenticated(), image: picture } });
+                        });
+                        datab.close();
+                        readytoclose = true;
                 });
-
-                datab.close();
         }
 });
 
